@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import * as ReactDOM from 'react-dom/client'; 
 import QuestionDetails from './QuestionDetails';
 import EmptyQuestionMessage from './EmptyQuestionMessage';
+import Loader from './Loader';
 
 
 const QuestionList = () => {
@@ -22,10 +23,12 @@ const QuestionList = () => {
   const [questionsList, setQuestionsList] = useState([]);
   const [selectedOption, setSelectedOption] = useState(questionTags[0].value)
   const [isShowAlert, setIsShowAlert] = useState(false); 
+  const [isShowLoader, setIsShowLoader] = useState(true);
 
   const questionsURL = 'http://localhost:3000/api/v1/questions'
 
   const getQuestions = () => {
+    setIsShowLoader(false)
     fetch(questionsURL)
     .then(response => response.json())
     .then(data => {
@@ -78,6 +81,8 @@ const QuestionList = () => {
   ]
 
   const updateSelectedItem = (e) => {
+    setIsShowLoader(false)
+    setIsShowAlert(false)
     setQuestionsList([])
     setSelectedOption(e.target.value)
     fetch(questionsURL + `?tags=${questionTags[e.target.value].label}`)
@@ -87,10 +92,9 @@ const QuestionList = () => {
       setQuestionsList(data)
       if(data.length == 0) {
         setIsShowAlert(true)
-      } else {
-        setIsShowAlert(false)
+        setIsShowLoader(true)
       }
-    })
+    }) 
   }
 
   return (
@@ -98,6 +102,7 @@ const QuestionList = () => {
       <div className="row">
         <div className="col-lg-10 mx-auto">
           <p className="lead fw-bold">Filter Questions By Tags</p>
+       
             <select className="form-select form-select-lg" value={selectedOption} onChange={(e) => updateSelectedItem(e)}>
               {questionTags.map(tag => (
                 <option key={tag.value} value={tag.value}>{tag.label}</option>
@@ -107,7 +112,7 @@ const QuestionList = () => {
           { questionsList.length > 0 ? 
           questionsList.map((question, index) => 
             <QuestionDetails question={question} key={index}/>
-          ) : "Loading.. " }
+          ) : <Loader isShowLoader={isShowLoader}/> }
 
           {isShowAlert && <EmptyQuestionMessage tagname={questionTags[selectedOption].label}/> }
         </div>
