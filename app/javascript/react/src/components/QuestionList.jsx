@@ -1,8 +1,26 @@
 import * as React from 'react'; 
-import * as ReactDOM from 'react-dom'; 
+import { useState, useEffect } from 'react'; 
+import * as ReactDOM from 'react-dom/client'; 
 import QuestionDetail from './QuestionDetails';
 
 const QuestionList = () => {
+
+  const [questionsList, setQuestionsList] = useState([]);
+  const questionsURL = 'http://localhost:3000/api/v1/questions'
+
+  const getQuestions = () => {
+    fetch(questionsURL)
+    .then(response => response.json())
+    .then(data => {
+      console.log(data)
+      setQuestionsList(data)
+    })
+  }
+
+  useEffect(() => {
+    getQuestions()
+  }, [])
+
   const questionList = [
     {
       title: "How to check if a key is present in a hash?",
@@ -37,7 +55,7 @@ const QuestionList = () => {
       tag: "Rails"
     }
   ]
-  
+
   return (
     <div>
       <div className="row">

@@ -5,6 +5,7 @@ import * as ReactDOM from 'react-dom';
 const QuestionDetail = (props) => {
 
   const [likeCount, setLikeCount] = useState(0)
+  const [dislikeCount, setDislikeCount] = useState(0)
   return (
     <div>
       <div className="card rounded-0 mt-3">
@@ -13,11 +14,21 @@ const QuestionDetail = (props) => {
           <p className="lead">
             <span className="badge bg-primary">{props.question.tag}</span>
           </p>
-          <button className="btn btn-primary mt-1" onClick={() => setLikeCount(likeCount + 1)}>
-            Like</button>
-          { likeCount > 0 ? 
-            <span className="badge bg-primary">{likeCount}</span> : '' } 
+          <button type="button" className="btn btn-primary position-relative" style={{marginRight: 1 + "em" }} onClick={() => setLikeCount(likeCount + 1)}>
+            Like
+            { likeCount > 0 ? 
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {likeCount}
+              </span> : '' }
+          </button>
 
+          <button type="button" className="btn btn-primary position-relative" onClick={() => setDislikeCount(dislikeCount + 1)}>
+            Dislike
+            { dislikeCount > 0 ? 
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {dislikeCount}
+              </span> : '' }
+          </button>
         </div>
       </div>
     </div>
