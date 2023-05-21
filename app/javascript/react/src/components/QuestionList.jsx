@@ -1,18 +1,31 @@
 import * as React from 'react'; 
 import { useState, useEffect } from 'react'; 
 import * as ReactDOM from 'react-dom/client'; 
-import QuestionDetail from './QuestionDetails';
+import QuestionDetails from './QuestionDetails';
 
 const QuestionList = () => {
 
+  const questionTags = [
+    {label: "All", value: 0 },
+    {label: "Ruby", value: 1 },
+    {label: "Rails", value: 2 },
+    {label: "React", value: 3 },
+    {label: "Javascript", value: 4 },
+    {label: "Data Structures", value: 5 },
+    {label: "Java", value: 6 }
+  ]
+
+
+
   const [questionsList, setQuestionsList] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(questionTags[0].value)
+
   const questionsURL = 'http://localhost:3000/api/v1/questions'
 
   const getQuestions = () => {
     fetch(questionsURL)
     .then(response => response.json())
     .then(data => {
-      console.log(data)
       setQuestionsList(data)
     })
   }
@@ -56,12 +69,30 @@ const QuestionList = () => {
     }
   ]
 
+  const updateSelectedItem = (e) => {
+    setQuestionsList([])
+    setSelectedOption(e.target.value)
+    fetch(questionsURL + `?tags=${questionTags[e.target.value].label}`)
+    .then(response => response.json())
+    .then(data => {
+      console.log(data)
+      setQuestionsList(data)
+    })
+  }
+
   return (
     <div>
       <div className="row">
         <div className="col-lg-10 mx-auto">
-          {questionList.map((question, index) => 
-            <QuestionDetail question={question} key={index}/>
+          <p className="lead fw-bold">Filter Questions By Tags</p>
+            <select className="form-select form-select-lg" value={selectedOption} onChange={(e) => updateSelectedItem(e)}>
+              {questionTags.map(tag => (
+                <option key={tag.value} value={tag.value}>{tag.label}</option>
+              ))}
+            </select>
+
+          {questionsList.map((question, index) => 
+            <QuestionDetails question={question} key={index}/>
           )}
         </div>
       </div>
