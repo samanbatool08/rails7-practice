@@ -2,6 +2,8 @@ import * as React from 'react';
 import { useState, useEffect } from 'react'; 
 import * as ReactDOM from 'react-dom/client'; 
 import QuestionDetails from './QuestionDetails';
+import EmptyQuestionMessage from './EmptyQuestionMessage';
+
 
 const QuestionList = () => {
 
@@ -19,6 +21,7 @@ const QuestionList = () => {
 
   const [questionsList, setQuestionsList] = useState([]);
   const [selectedOption, setSelectedOption] = useState(questionTags[0].value)
+  const [isShowAlert, setIsShowAlert] = useState(false); 
 
   const questionsURL = 'http://localhost:3000/api/v1/questions'
 
@@ -27,6 +30,11 @@ const QuestionList = () => {
     .then(response => response.json())
     .then(data => {
       setQuestionsList(data)
+      if(data.length == 0) {
+        setIsShowAlert(true)
+      } else {
+        setIsShowAlert(false)
+      }
     })
   }
 
@@ -77,6 +85,11 @@ const QuestionList = () => {
     .then(data => {
       console.log(data)
       setQuestionsList(data)
+      if(data.length == 0) {
+        setIsShowAlert(true)
+      } else {
+        setIsShowAlert(false)
+      }
     })
   }
 
@@ -91,9 +104,12 @@ const QuestionList = () => {
               ))}
             </select>
 
-          {questionsList.map((question, index) => 
+          { questionsList.length > 0 ? 
+          questionsList.map((question, index) => 
             <QuestionDetails question={question} key={index}/>
-          )}
+          ) : "Loading.. " }
+
+          {isShowAlert && <EmptyQuestionMessage tagname={questionTags[selectedOption].label}/> }
         </div>
       </div>
     </div>
