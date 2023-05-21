@@ -35,9 +35,9 @@ const QuestionList = () => {
     {
       title: "How to check/test API endpoints?",
       tag: "Rails"
-    },
-
+    }
   ]
+  
   return (
     <div>
       <div className="row">
